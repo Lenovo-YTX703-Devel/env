@@ -47,6 +47,10 @@ echo "">$OUT_FILE
 ##### Global exclusion list
 # exclude "225684"
 
+# Example:
+# queryGerrit <apply changes, which are submitted together> <query> <exclude changes>
+# Note: changes, which are applied or excluded will never applied in other queryGerrit calls
+
 ##### # system/core
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_system_core AND branch:lineage-16.0"
 
