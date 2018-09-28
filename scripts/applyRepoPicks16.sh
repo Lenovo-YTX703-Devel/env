@@ -132,6 +132,8 @@ queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_dev
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_kernel_lenovo_msm8976 AND branch:lineage-16.0"
 
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_hardware_qcom_audio branch:lineage-16.0-caf-8952"
+queryGerrit "n"  "change:224631" # audio: Update compiler flags
+
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_hardware_qcom_media branch:lineage-16.0-caf-8952"
 
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_device_qcom_sepolicy branch:lineage-16.0" "224768 224767"
