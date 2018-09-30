@@ -37,7 +37,7 @@ export BUILD_PWD=`pwd`
 ############################   Clean up repo ####################
 # Clean build
 echo "Performing cleanup..."
-repo forall -vc 'bash -c "performCleanup $REPO_PATH"'
+#repo forall -vc 'bash -c "performCleanup $REPO_PATH"'
 ############################ Apply repopicks ####################
 
 echo "Performing repopicks..."
@@ -45,7 +45,8 @@ echo "Performing repopicks..."
 echo "">$OUT_FILE
 
 ##### Global exclusion list
-# exclude "225684"
+exclude "226917" # Switch root to /system in first stage mount
+exclude "226923" # init: First Stage Mount observe nofail mount flag
 
 # Example:
 # queryGerrit <apply changes, which are submitted together> <query> <exclude changes>
@@ -58,7 +59,7 @@ queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_sys
 
 queryGerrit "n"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:pie-swap-volume-buttons"
 
-#queryGerrit "n"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:pie-lock-pattern"
+queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:pie-lock-pattern"
 
 queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:pie-navbar-runtime-toggle AND NOT (project:LineageOS/android_packages_apps_SetupWizard)"
 
@@ -74,8 +75,29 @@ queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic
 
 queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:fbe-wrapped-key"
 
+queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:pie-clock-customizations"
+
+queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND change:229384" # Settings: Add high touch sensitivity and touchscreen hovering toggles
+
 # Remaining framework patches
-queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_frameworks_base AND branch:lineage-16.0"
+# queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_frameworks_base AND branch:lineage-16.0"
+
+##### # frameworks/base
+queryGerrit "n" "change:225728"; # Camera button support  
+queryGerrit "n" "change:229254"; # SystemUI: handle camera launch gesture from keyhandler  
+queryGerrit "n" "change:226236"; # SystemUI: add navbar button layout inversion tuning  
+queryGerrit "n" "change:226276"; # power: Re-introduce custom charging sounds  
+queryGerrit "n" "change:224844"; # lockscreen: Add option for showing unlock screen directly  
+queryGerrit "n" "change:225754"; # SystemUI: Berry styles  
+queryGerrit "n" "change:225582"; # [TEMP]: Revert "OMS: harden permission checks"  
+queryGerrit "n" "change:227108"; # SystemUI: Fix several issues in the ADB over Network tile  
+queryGerrit "n" "change:226615"; # NavigationBarView: Avoid NPE before mPanelView is created  
+queryGerrit "n" "change:227821"; # GlobalScreenshot: Fix screenshot not saved when appending appname with some languages  
+queryGerrit "n" "change:228405"; # Forward port CM Screen Security settings (1/2)  
+queryGerrit "n" "change:229230"; # SystemUI: allow the power menu to be relocated  
+queryGerrit "n" "change:230016"; # Implement expanded desktop feature  
+queryGerrit "n" "change:224446"; # SystemUI: Make tablets great again  
+queryGerrit "n" "change:224513"; # SystemUI: Disable config_keyguardUserSwitcher on sw600dp  
 
 queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:revert-textrels"
 
