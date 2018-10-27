@@ -19,11 +19,12 @@ export -f contains
 
 function applyRepopick(){
   change=$1
+  options="$2"
   if [ $(contains "${ARRAY[@]}" "$change") == "y" ]; then
     debug "Skipping change $change - already applied in this session or it is excluded"
   else
     echo "Apply change $change"
-    python ./vendor/lineage/build/tools/repopick.py -c 50 $change
+    python ./vendor/lineage/build/tools/repopick.py -c 50 $options $change
     curl -s -H 'Accept-Type: application/json' "https://review.lineageos.org/changes/$change" | tail -n +2 | jq -r '{project, _number, subject} | {topic: "\(._number|tostring) # \(.project) # \(.subject)"} | join("\t")' >>$OUT_FILE
     ARRAY+=($change)
   fi
@@ -80,6 +81,55 @@ function queryGerrit(){
      done
 }
 export -f queryGerrit
+
+function queryGerrit2(){
+while [[ "$#" > 0 ]]; do case $1 in
+  -f|--fetchSubmittedTogether) fetchSubmittedTogether="$2"; shift;;
+  -q|--query)     query="$2"; shift;;
+  -e|--exclude)   excludedChanges="$2"; shift;;
+  -o|--options)   repopickOptions="$2"; shift;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+     exclude "$excludedChanges"
+     echo "Perform query $query"
+     change_list=$(curl -s -H 'Accept-Type: application/json' `echo "https://review.lineageos.org/changes/?q="${query} | sed "s/ /+/g"`| tail -n +2 | jq -r '.[]._number')
+     debug $change_list
+     for item in ${change_list[*]}
+     do
+        if [ $(contains "${ARRAY[@]}" "$item") == "y" ]; then
+         debug "Skipping change $item - already fetched it's sub entries or it is excluded"
+        else
+         debug $item
+         if [ $fetchSubmittedTogether == "y"  ]; then
+              submitted_together=$(querySubmittedTogether $item)
+              debug "Org:" $submitted_together
+              submitted_together_rev=$(reverse "$submitted_together")
+              debug "Rev:" $submitted_together_rev
+              for subItem in ${submitted_together_rev[*]}
+              do
+                   applyRepopick $subItem "$repopickOptions"
+             done
+         fi
+         applyRepopick $item "$repopickOptions"
+        fi
+     done
+}
+export -f queryGerrit
+
+
+function excludeQueryGerrit(){
+     query=$1
+     echo "Perform query $query"
+     change_list=$(curl -s -H 'Accept-Type: application/json' `echo "https://review.lineageos.org/changes/?q="${query} | sed "s/ /+/g"`| tail -n +2 | jq -r '.[]._number')
+     debug $change_list
+     for item in ${change_list[*]}
+     do
+         exclude $item
+     done
+}
+export -f excludeQueryGerrit
+
 
 function performCleanup()
 {
