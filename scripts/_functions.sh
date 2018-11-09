@@ -83,6 +83,17 @@ function queryGerrit(){
 export -f queryGerrit
 
 function queryGerrit2(){
+echo $#
+if (( $# == 0 )); then
+cat << EOF
+queryGerrit2 help
+-f|--fetchSubmittedTogether apply changes as they are commited
+-q|--query query which is applied to retrieve changes
+-e|--exclude exclude list of changes
+-o|--options options applied directly to repopick
+EOF
+    exit
+fi
 while [[ "$#" > 0 ]]; do case $1 in
   -f|--fetchSubmittedTogether) fetchSubmittedTogether="$2"; shift;;
   -q|--query)     query="$2"; shift;;
