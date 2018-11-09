@@ -47,6 +47,9 @@ echo "">$OUT_FILE
 ##### Global exclusion list
 #excludeQueryGerrit "topic:android-9.0.0_r12"
 
+# topic:android-9.0.0_r12 
+#queryGerrit2 -f "y" -q  "status:open AND is:mergeable AND topic:android-9.0.0_r12"
+
 #LineageOS/android_device_lenovo_YTX703-common
 exclude "230059" # vintf: uprev power hal from 1.0 to 1.1
 
@@ -60,8 +63,8 @@ exclude "230234" # common: allow wifi HIDL HAL to read tombstones, superseeded b
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_device_lenovo_YTX703-common AND branch:lineage-16.0" "228856"
 queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_kernel_lenovo_msm8976 AND branch:lineage-16.0"
 
-queryGerrit "y"  "status:open AND is:mergeable AND branch:lineage-16.0-caf-8952"
-queryGerrit2 -f "n"  -q "change:224631" # audio: Update compiler flags
+queryGerrit "y"  "status:open AND is:mergeable AND project:LineageOS/android_hardware_qcom_audio AND branch:lineage-16.0-caf-8952"
+#queryGerrit2 -f "n"  -q "change:224631" # audio: Update compiler flags
 
 queryGerrit2 -f "y" -q "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:pie-hw-fde"
 queryGerrit2 -f "y" -q "status:open AND is:mergeable AND branch:lineage-16.0 AND topic:fbe-wrapped-key"
@@ -80,11 +83,5 @@ python ./vendor/lineage/build/tools/repopick.py -f -c 50 230246-230257
 # Enable permissive mode
 python ./vendor/lineage/build/tools/repopick.py -f -c 50 228843
 
-# topic:android-9.0.0_r12 
-# queryGerrit2 -f "y" -q  "status:open AND is:mergeable AND topic:android-9.0.0_r12"
-
 echo "Changing qseecom-kernel-headers -> generated_kernel_headers..."
 sed -i 's/qseecom-kernel-headers/generated_kernel_headers/' vendor/qcom/opensource/cryptfs/hw/Android.bp
-
-echo "Revert commit 593513e216e7a6e9b60d6f477f2e48a71f97af9f sepolicy: allow init to read /proc/device-tree"
-sed -i '/.*\/device-tree\/firmware\/android.*/d' device/lenovo/YTX703-common/sepolicy/genfs_contexts
