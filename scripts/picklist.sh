@@ -45,12 +45,11 @@ pick() {
 	. build/envsetup.sh
 
 	repopick_chain 233415 # device/lenovo/YTX703-common
-	repopick_chain 228836 # kernel/lenovo/msm8976
+	repopick_chain 236264 # kernel/lenovo/msm8976
 
 	# ######################
 	# # Needed for things to compile
 
-	repopick 230151 # Fix storaged access to /sys/block/mmcblk0/stat after c936223c
 	repopick -t "pie-mode-bits"
 
 	#######################
@@ -80,6 +79,12 @@ pick() {
 
 	repopick -c 100 -t "pie-qcom-sepolicy"
 	repopick -c 100 -t "pie-qcom-legacy-sepolicy"
+	repopick 234861 # Reading the serialno property is forbidden
+	repopick 234884 # Allow init to write to /proc/cpu/alignment
+	repopick 234886 # Allow init to chmod/chown /proc/slabinfo
+	repopick 235196 # Allow dnsmasq to getattr netd unix_stream_socket
+	repopick 235258 # Allow fsck_untrusted to getattr block_device
+	repopick 236217 # private: allow vendor_init to create dpmd_data_file
 	repopick -c 100 230834 # legacy: allow init to read /proc/device-tree
 	repopick -c 100 230230 # common: fix sensors denial
 	repopick -c 100 230231 # common: grant cnss-daemon access to sysfs_net
@@ -88,11 +93,11 @@ pick() {
 	#repopick -c 100 230234 # common: allow wifi HIDL HAL to read tombstones <- superseded by 230831
 	repopick -c 100 230235 # common: grant DRM HIDL HAL ownership access to /data/{misc,vendor}/media/
 	repopick -c 100 230236 # common: label /sys/devices/virtual/graphics as sysfs_graphics
-	repopick -c 100 230238 # common: create proc_kernel_sched domain to restrict perf hal access
+	#repopick -c 100 230238 # common: create proc_kernel_sched domain to restrict perf hal access <- doesn't apply
 	repopick -c 100 230239 # common: allow uevent to control sysfs_mmc_host via vold
 
 	# system/core
-	repopick 230755 # libsuspend: Bring back earlysuspend
+	#repopick 230755 # libsuspend: Bring back earlysuspend <- abandoned
 
 	# O_TMPFILE patches
 	#repopick -f -c 50 230246-230257
