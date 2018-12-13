@@ -1,0 +1,26 @@
+From 941f95abbec43e42bf622083b8d8d9495d3f2c8b Mon Sep 17 00:00:00 2001
+From: Vladimir Oltean <olteanv@gmail.com>
+Date: Wed, 12 Dec 2018 22:29:20 +0200
+Subject: [PATCH] Revert "overlay: disable DT2W entry from settings"
+
+This reverts commit faaebc3041b4cbaf2f5c6add5dfd8935bb411a42.
+---
+ overlay/frameworks/base/core/res/res/values/config.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/overlay/frameworks/base/core/res/res/values/config.xml b/overlay/frameworks/base/core/res/res/values/config.xml
+index 52cc95b..78aa876 100644
+--- a/overlay/frameworks/base/core/res/res/values/config.xml
++++ b/overlay/frameworks/base/core/res/res/values/config.xml
+@@ -308,7 +308,7 @@
+     <bool name="config_cameraDoubleTapPowerGestureEnabled">false</bool>
+ 
+     <!-- Whether device supports double tap to wake -->
+-    <bool name="config_supportDoubleTapWake">false</bool>
++    <bool name="config_supportDoubleTapWake">true</bool>
+ 
+     <!-- If this is true, device supports Sustained Performance Mode. -->
+     <bool name="config_sustainedPerformanceModeSupported">true</bool>
+-- 
+2.7.4
+

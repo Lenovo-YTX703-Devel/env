@@ -44,8 +44,8 @@ perform_cleanup() {
 pick() {
 	. build/envsetup.sh
 
-	repopick_chain 233415 # device/lenovo/YTX703-common
-	repopick_chain 236264 # kernel/lenovo/msm8976
+	repopick_chain 236425 # device/lenovo/YTX703-common
+	repopick_chain 230257 # kernel/lenovo/msm8976
 
 	# ######################
 	# # Needed for things to compile
@@ -57,27 +57,31 @@ pick() {
 
 	repopick_chain 231249 # roomservice.py for lineage-16.0
 	repopick 232292 # repopick: be able to kang yourself
-	repopick_chain 233223 # Snap: Always allow 100% JPEG quality to be set
+	#repopick_chain 233223 # Snap: Always allow 100% JPEG quality to be set
 	repopick -c 100 -t "pie-gallery2"
 	repopick -c 100 -t "pie-tiles"
 	repopick -c 100 -t "pie-powermenu"
 	#repopick -t "pie-battery-styles"
 	#repopick -t "pie-hide-night-display"
 
+	repopick -c 100 -t "wifi-dual-interface"
+	repopick -c 100 -t "pie-su"
+
 	#######################
 	# Needed for things to work
 	#
+	repopick -c 100 -t "pie-hw-fde"
+	repopick -c 100 -t "fbe-wrapped-key"
 
 	repopick 224631 # audio: Update compiler flags
 	repopick 230224 # init: run timekeep service as system user
 	repopick 230610 # APP may display abnormally in landscape LCM
 	repopick 230613 # Allow webview_zygote to read /dev/ion
-	repopick 224446 # SystemUI: Make tablets great again
 
-	repopick_chain 233741 # hardware/qcom/audio-caf/msm8952
-	repopick 224642 # hardware/qcom/audio-caf/msm8952
+	repopick_chain 227211 # hardware/qcom/audio-caf/msm8952
+	#repopick 224642 # hardware/qcom/audio-caf/msm8952
 
-	repopick -c 100 -t "pie-qcom-sepolicy"
+	#repopick -c 100 -t "pie-qcom-sepolicy"
 	repopick -c 100 -t "pie-qcom-legacy-sepolicy"
 	repopick 234861 # Reading the serialno property is forbidden
 	repopick 234884 # Allow init to write to /proc/cpu/alignment
@@ -99,14 +103,8 @@ pick() {
 	# system/core
 	#repopick 230755 # libsuspend: Bring back earlysuspend <- abandoned
 
-	# O_TMPFILE patches
-	#repopick -f -c 50 230246-230257
-
 	# Enable permissive mode
-	repopick -f -c 50 228843
-
-	echo "Changing qseecom-kernel-headers -> generated_kernel_headers..."
-	sed -i 's/qseecom-kernel-headers/generated_kernel_headers/' vendor/qcom/opensource/cryptfs/hw/Android.bp
+	#repopick -f -c 50 228843
 }
 
 usage() {

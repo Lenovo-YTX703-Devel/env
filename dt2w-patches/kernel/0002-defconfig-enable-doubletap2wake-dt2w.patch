@@ -1,0 +1,26 @@
+From f42f856844049418beb322b5e5e6e606ebf4ba0a Mon Sep 17 00:00:00 2001
+From: Vladimir Oltean <olteanv@gmail.com>
+Date: Fri, 11 May 2018 02:05:47 +0300
+Subject: [PATCH 2/2] defconfig: enable doubletap2wake (dt2w)
+
+Change-Id: I3b714059abe2c3aaacf40234680a0a52cc934996
+Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
+---
+ arch/arm64/configs/lineage_YTX703_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/lineage_YTX703_defconfig b/arch/arm64/configs/lineage_YTX703_defconfig
+index d17de6b..edfdb72 100644
+--- a/arch/arm64/configs/lineage_YTX703_defconfig
++++ b/arch/arm64/configs/lineage_YTX703_defconfig
+@@ -1502,6 +1502,7 @@ CONFIG_KEYBOARD_GPIO=y
+ CONFIG_INPUT_TOUCHSCREEN=y
+ CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_v21=y
+ CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_I2C_v21=y
++CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE=y
+ # CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_SPI_v21 is not set
+ CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_CORE_v21=y
+ # CONFIG_TOUCHSCREEN_ADS7846 is not set
+-- 
+2.7.4
+
