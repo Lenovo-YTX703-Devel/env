@@ -47,29 +47,19 @@ pick() {
 	repopick_chain 236425 # device/lenovo/YTX703-common
 	repopick_chain 230257 # kernel/lenovo/msm8976
 
-	# ######################
-	# # Needed for things to compile
-
-	repopick -t "pie-mode-bits"
-
-	#######################
-	# Nice to have
-
 	repopick_chain 231249 # roomservice.py for lineage-16.0
 	repopick 232292 # repopick: be able to kang yourself
-	#repopick_chain 233223 # Snap: Always allow 100% JPEG quality to be set
-	repopick -c 100 -t "pie-gallery2"
-	repopick -c 100 -t "pie-tiles"
-	repopick -c 100 -t "pie-powermenu"
-	#repopick -t "pie-battery-styles"
-	#repopick -t "pie-hide-night-display"
+	#repopick_chain 233223 # Snap
 
-	repopick -c 100 -t "wifi-dual-interface"
+	# Cruft so that pie-su applies
+	repopick 226151 # Settings: show Trust brading in confirm_lock_password UI
+	repopick 226148 # Settings: "Security & location" -> "Security & privacy"
+	repopick 227120 # Settings: Check interfaces before enabling ADB over network
+	repopick 232371 -P .repo/manifests # manifest: Sync extras/su
+	repo sync system/extras/su
 	repopick -c 100 -t "pie-su"
+	repopick -c 100 -t "pie-privacy-guard"
 
-	#######################
-	# Needed for things to work
-	#
 	repopick -c 100 -t "pie-hw-fde"
 	repopick -c 100 -t "fbe-wrapped-key"
 
@@ -88,7 +78,9 @@ pick() {
 	repopick 234886 # Allow init to chmod/chown /proc/slabinfo
 	repopick 235196 # Allow dnsmasq to getattr netd unix_stream_socket
 	repopick 235258 # Allow fsck_untrusted to getattr block_device
-	repopick 236217 # private: allow vendor_init to create dpmd_data_file
+	#repopick 236217 # private: allow vendor_init to create dpmd_data_file
+	repopick 230237 # common: allow vendor_init to create /data/dpm
+	repopick 230229 # mm-qcamera-daemon: fix denial
 	repopick -c 100 230834 # legacy: allow init to read /proc/device-tree
 	repopick -c 100 230230 # common: fix sensors denial
 	repopick -c 100 230231 # common: grant cnss-daemon access to sysfs_net
@@ -105,6 +97,8 @@ pick() {
 
 	# Enable permissive mode
 	#repopick -f -c 50 228843
+	git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
+	git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
 }
 
 usage() {
