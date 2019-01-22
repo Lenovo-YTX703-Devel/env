@@ -1,7 +1,7 @@
-From 941f95abbec43e42bf622083b8d8d9495d3f2c8b Mon Sep 17 00:00:00 2001
+From 76ab708650092e08a3af2e2bfc7cdf09bfb06e0e Mon Sep 17 00:00:00 2001
 From: Vladimir Oltean <olteanv@gmail.com>
 Date: Wed, 12 Dec 2018 22:29:20 +0200
-Subject: [PATCH] Revert "overlay: disable DT2W entry from settings"
+Subject: [PATCH 1/2] Revert "overlay: disable DT2W entry from settings"
 
 This reverts commit faaebc3041b4cbaf2f5c6add5dfd8935bb411a42.
 ---
