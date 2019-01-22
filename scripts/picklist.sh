@@ -44,40 +44,28 @@ perform_cleanup() {
 pick() {
 	source build/envsetup.sh
 
-	repopick_chain 238169 # device/lenovo/YTX703-common
-	repopick 238097
-	repopick_chain 230257 # kernel/lenovo/msm8976
+	repopick_chain 239373 # device/lenovo/YTX703-common
 
-	repopick_chain 231249 # roomservice.py for lineage-16.0
-	repopick -c 100 232292 # repopick: be able to kang yourself
-
-	repopick_chain 238128 # extract_utils
+	repopick_chain 239527 # extract_utils
 
 	repopick -c 100 230224 # init: run timekeep service as system user
-	repopick -c 100 230610 # APP may display abnormally in landscape LCM
+
+	# hal warnings
+	repopick_chain 239155 # msm8952 media-caf
+	repopick_chain 239159 # msm8952 audio-caf
 
 	# sepolicy
-	#repopick -c 100 230613 # Allow webview_zygote to read /dev/ion
-	repopick -c 100 234861 # Reading the serialno property is forbidden
-	repopick -c 100 234884 # Allow init to write to /proc/cpu/alignment
-	repopick -c 100 234886 # Allow init to chmod/chown /proc/slabinfo
-	repopick -c 100 235196 # Allow dnsmasq to getattr netd unix_stream_socket
-	repopick -c 100 235258 # Allow fsck_untrusted to getattr block_device
-	repopick -c 100 230237 # common: allow vendor_init to create /data/dpm
-	repopick -c 100 230229 # mm-qcamera-daemon: fix denial
-	repopick -c 100 230834 # legacy: allow init to read /proc/device-tree
-	repopick -c 100 230230 # common: fix sensors denial
-	repopick -c 100 230231 # common: grant cnss-daemon access to sysfs_net
+	repopick -c 100 230613 # Allow webview_zygote to read /dev/ion
+	repopick -c 100 230233 # common: allow sensors HIDL HAL to access /dev/sensors <- this has a comment from Bruno
 	repopick -c 100 230232 # common: grant netmgrd access to sysfs_net nodes
-	repopick -c 100 230233 # common: allow sensors HIDL HAL to access /dev/sensors
-	repopick -c 100 230235 # common: grant DRM HIDL HAL ownership access to /data/{misc,vendor}/media/
-	repopick -c 100 230236 # common: label /sys/devices/virtual/graphics as sysfs_graphics
-	repopick -c 100 230239 # common: allow uevent to control sysfs_mmc_host via vold
+	repopick -c 100 239478 # sepolicy: Add rps to sysfs context and allow netmgrd access
+	repopick -c 100 236217 # private: allow vendor_init to create dpmd_data_file
+	repopick -c 100 230231 # common: grant cnss-daemon access to sysfs_net
 
-	#repopick -t "pie-qcom-wfd"
+	repopick -t "pie-aosp-wfd"
 
-	git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
-	git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
+	#git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
+	#git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
 }
 
 usage() {
