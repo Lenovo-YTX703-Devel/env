@@ -45,9 +45,7 @@ pick() {
 	source build/envsetup.sh
 
 	repopick_chain 239373 # device/lenovo/YTX703-common
-
 	repopick_chain 239527 # extract_utils
-
 	repopick -c 100 230224 # init: run timekeep service as system user
 
 	# hal warnings
@@ -56,11 +54,7 @@ pick() {
 
 	# sepolicy
 	repopick -c 100 230613 # Allow webview_zygote to read /dev/ion
-	repopick -c 100 230233 # common: allow sensors HIDL HAL to access /dev/sensors <- this has a comment from Bruno
-	repopick -c 100 230232 # common: grant netmgrd access to sysfs_net nodes
-	repopick -c 100 239478 # sepolicy: Add rps to sysfs context and allow netmgrd access
-	repopick -c 100 236217 # private: allow vendor_init to create dpmd_data_file
-	repopick -c 100 230231 # common: grant cnss-daemon access to sysfs_net
+	repopick_chain 239741 # qcom sepolicy-legacy
 
 	repopick -t "pie-aosp-wfd"
 
