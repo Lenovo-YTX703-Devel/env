@@ -26,12 +26,12 @@ clean() {
 }
 
 perform_cleanup() {
-	excludearray="vendor/lenovo device/xiaomi/msm8956-common"
+	excludearray="vendor/lenovo device/xiaomi/msm8956-common kernel/xiaomi/msm8956 vendor/xiaomi device/lenovo/YTX703-common"
 	cd ${BUILD_PWD}
 	repo="$1"
 	echo -n "${repo} "
 
-	if echo ${1} | grep -q "${excludearray}"; then
+	if echo "${excludearray}" | grep -q "${1}"; then
 		echo "Skipping"
 	else
 		echo "Clean up now"
@@ -42,63 +42,36 @@ perform_cleanup() {
 }
 
 pick() {
-	. build/envsetup.sh
+	local rice=false
 
-	repopick_chain 236425 # device/lenovo/YTX703-common
-	repopick_chain 230257 # kernel/lenovo/msm8976
+	while [ $# -ne 0 ]; do
+		case $1 in
+		--rice)
+			rice=true
+			;;
+		esac
+		shift
+	done
 
-	repopick_chain 231249 # roomservice.py for lineage-16.0
-	repopick 232292 # repopick: be able to kang yourself
-	#repopick_chain 233223 # Snap
+	source build/envsetup.sh
 
-	# Cruft so that pie-su applies
-	repopick 226151 # Settings: show Trust brading in confirm_lock_password UI
-	repopick 226148 # Settings: "Security & location" -> "Security & privacy"
-	repopick 227120 # Settings: Check interfaces before enabling ADB over network
-	repopick 232371 -P .repo/manifests # manifest: Sync extras/su
-	repo sync system/extras/su
-	repopick -c 100 -t "pie-su"
-	repopick -c 100 -t "pie-privacy-guard"
+	repopick_chain 240046 # device/lenovo/YTX703-common
+	repopick_chain 239527 # extract_utils
+	repopick -c 100 230224 # init: run timekeep service as system user
 
-	repopick -c 100 -t "pie-hw-fde"
-	repopick -c 100 -t "fbe-wrapped-key"
+	# hal warnings
+	repopick_chain 239155 # msm8952 media-caf
+	repopick_chain 239159 # msm8952 audio-caf
 
-	repopick 224631 # audio: Update compiler flags
-	repopick 230224 # init: run timekeep service as system user
-	repopick 230610 # APP may display abnormally in landscape LCM
-	repopick 230613 # Allow webview_zygote to read /dev/ion
+	# sepolicy
+	repopick -c 100 230613 # Allow webview_zygote to read /dev/ion
 
-	repopick_chain 227211 # hardware/qcom/audio-caf/msm8952
-	#repopick 224642 # hardware/qcom/audio-caf/msm8952
+	repopick -t "pie-aosp-wfd"
 
-	#repopick -c 100 -t "pie-qcom-sepolicy"
-	repopick -c 100 -t "pie-qcom-legacy-sepolicy"
-	repopick 234861 # Reading the serialno property is forbidden
-	repopick 234884 # Allow init to write to /proc/cpu/alignment
-	repopick 234886 # Allow init to chmod/chown /proc/slabinfo
-	repopick 235196 # Allow dnsmasq to getattr netd unix_stream_socket
-	repopick 235258 # Allow fsck_untrusted to getattr block_device
-	#repopick 236217 # private: allow vendor_init to create dpmd_data_file
-	repopick 230237 # common: allow vendor_init to create /data/dpm
-	repopick 230229 # mm-qcamera-daemon: fix denial
-	repopick -c 100 230834 # legacy: allow init to read /proc/device-tree
-	repopick -c 100 230230 # common: fix sensors denial
-	repopick -c 100 230231 # common: grant cnss-daemon access to sysfs_net
-	repopick -c 100 230232 # common: grant netmgrd access to sysfs_net nodes
-	repopick -c 100 230233 # common: allow sensors HIDL HAL to access /dev/sensors
-	#repopick -c 100 230234 # common: allow wifi HIDL HAL to read tombstones <- superseded by 230831
-	repopick -c 100 230235 # common: grant DRM HIDL HAL ownership access to /data/{misc,vendor}/media/
-	repopick -c 100 230236 # common: label /sys/devices/virtual/graphics as sysfs_graphics
-	#repopick -c 100 230238 # common: create proc_kernel_sched domain to restrict perf hal access <- doesn't apply
-	repopick -c 100 230239 # common: allow uevent to control sysfs_mmc_host via vold
-
-	# system/core
-	#repopick 230755 # libsuspend: Bring back earlysuspend <- abandoned
-
-	# Enable permissive mode
-	#repopick -f -c 50 228843
-	git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
-	git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
+	if [ ${rice} = true ]; then
+		git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
+		git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
+	fi
 }
 
 usage() {
@@ -108,10 +81,12 @@ usage() {
 
 case ${1:-x} in
 clean)
-	clean
+	shift
+	clean $@
 	;;
 pick)
-	pick
+	shift
+	pick $@
 	;;
 perform_cleanup)
 	shift
