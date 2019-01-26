@@ -42,9 +42,20 @@ perform_cleanup() {
 }
 
 pick() {
+	local rice=false
+
+	while [ $# -ne 0 ]; do
+		case $1 in
+		--rice)
+			rice=true
+			;;
+		esac
+		shift
+	done
+
 	source build/envsetup.sh
 
-	repopick_chain 239373 # device/lenovo/YTX703-common
+	repopick_chain 240046 # device/lenovo/YTX703-common
 	repopick_chain 239527 # extract_utils
 	repopick -c 100 230224 # init: run timekeep service as system user
 
@@ -54,12 +65,13 @@ pick() {
 
 	# sepolicy
 	repopick -c 100 230613 # Allow webview_zygote to read /dev/ion
-	repopick_chain 239741 # qcom sepolicy-legacy
 
 	repopick -t "pie-aosp-wfd"
 
-	#git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
-	#git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
+	if [ ${rice} = true ]; then
+		git -C device/lenovo/YTX703-common am ${ANDROID_BUILD_TOP}/env/dt2w-patches/device/*.patch
+		git -C kernel/lenovo/msm8976 am ${ANDROID_BUILD_TOP}/env/dt2w-patches/kernel/*.patch
+	fi
 }
 
 usage() {
@@ -69,10 +81,12 @@ usage() {
 
 case ${1:-x} in
 clean)
-	clean
+	shift
+	clean $@
 	;;
 pick)
-	pick
+	shift
+	pick $@
 	;;
 perform_cleanup)
 	shift
